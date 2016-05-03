@@ -7,18 +7,37 @@ var getData = function(target) {
   }
 };
 
+
 var app = {
+  server: 'https://api.parse.com/1/classes/messages',
 
-  // state: {
-
-  // }
+  // TEST SPEC FUNCTIONS //
 
   init: () => {
+    $.ajax({
+      // This is the url you should use to communicate with the parse API server.
+      url: app.server,
+      data: {
+        format: 'json'
+      },      
+      type: 'GET',
+      contentType: 'application/json',
+      success: function (data) {
+        console.log('chatterbox: Message received');
+        allData = data.results;
+        app.displayMessages(allData);
+        app.populateDropdown(allData);
+      },
+      error: function (data) {
+        // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+        console.error('chatterbox: Failed to receive message', data);
+      }
+    });
 
   },
-  server: 'https://api.parse.com/1/classes/messages',
+
   send: (message) => {
-    // var context
+    console.log('inside send function call');
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
       url: app.server,
@@ -27,6 +46,9 @@ var app = {
       contentType: 'application/json',
       success: function (data) {
         console.log('chatterbox: Message sent');
+        app.init();
+        // allData = data.results;
+        // app.displayMessages(data);
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -34,6 +56,7 @@ var app = {
       }
     });
   },
+
   fetch: () => {
     // var context = this;
     // console.log(this);
@@ -48,7 +71,7 @@ var app = {
       success: function (data) {
         console.log('chatterbox: Message received');
         allData = data.results;
-        app.displayMessages();
+        // app.displayMessages(allData);
         // app.displayMessages(data);
         // app.populateDropdown(data);
         // console.log(data);
@@ -59,42 +82,93 @@ var app = {
       }
     });
   },
-  displayMessages: () => {
-    console.log(allData[23]['text']);
-    for ( var chat of allData ) {
-      console.log(chat);
-      var html = `<div>username: ${chat['username']}: message: ${chat['text']}</div>`;
+
+  clearMessages: () => {
+    $('#chats').empty();
+  },
+
+  addMessage: (message) => {
+    // get invoked upon clicking submit on the input field
+    // get the username
+    // get the input filed
+    // get the text
+    // invoke send(message)
+    var html = `<div>username: ${app.sanitize(message['username'])}: message: ${app.sanitize(message['text'])}</div>`;
+    $('#chats').append(html);
+    // app.displayMessages(message);
+    // update allData
+  },
+  // CUSTOM FUNCTIONS //
+
+  displayMessages: (data) => {
+    for ( var chat of data ) {
+      // console.log(chat);
+      var html = `<div>username: ${app.sanitize(chat['username'])}: message: ${app.sanitize(chat['text'])}</div>`;
       $('#chats').append(html);
     }
   },
-  populateDropdown: (data) => {
 
-    // var rooms = [];
-    // for (var chat of chats) {
-    //   rooms.push(chat.roomname);
-    // }
-    // for (var room of _.uniq(rooms)) {
-    //   // var chat['room'] = chat.roomname;
-    //   var html = `<option value="${room}">${room}</option>`;
-    //   $('#dropdown').append(html);      
-    // }
+  populateDropdown: () => {
+    var rooms = [];
+    for (var chat of allData) {
+      rooms.push(chat.roomname);
+    }
+    for (var room of _.uniq(rooms)) {
+      var cleanRoom = app.sanitize(room);
+      var html = `<option value="${cleanRoom}">${cleanRoom}</option>`;
+      $('#dropdown').append(html);      
+    }
+    console.log(rooms);
   },
 
-  changeRoom: (value) => {
-    // show chats for just a specific room
-    // manipulate the DOM where the ID is chats
-    // pull/show different room from server
+  addRoom: (room, message) => {
+    // empty the DOM 
+    // add message || "add a message to your new room!"
+    // 
 
-    // $(show).(chat.rommname.value)
-    // if chat.roomname === value
-      // show messages
-    // loop through data, find roomnames matching target value
-      // display those messages
 
+  },
+
+  changeRoom: (room) => {
+    var roomData = [];
+    for (var chat of allData) {
+      if (chat.roomname === room && chat.roomname !== undefined ) {
+        roomData.push(chat);
+      } 
+    }
+    app.clearMessages();
+    app.displayMessages(roomData);
+  },
+  sendMessage: (textMessage) => {
+    var username = window.location.search.slice(10);
+    var room = $('#dropdown option:selected').text();
+    var messageObject = {
+      username: username,
+      text: textMessage,
+      roomname: room
+    };
+    app.send(messageObject);
+  },
+
+  sanitize: (str, config) => {
+    try {
+      var n = document.createElement('div');
+      n.innerHTML = str;
+      var s = new Sanitize(config || Sanitize.Config.RESTRICTED);
+      var c = s.clean_node(n);
+      var o = document.createElement('div');
+      o.appendChild(c.cloneNode(true));
+      return o.innerHTML;
+    }
+    catch (e) {
+      return _.escape(str);
+    }
   }
 
 };
+
 $( document ).ready(
-  app.fetch()
+  app.init()
+  // app.populateDropdown()
 );
 
