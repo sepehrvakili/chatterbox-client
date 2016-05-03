@@ -15,22 +15,25 @@
   </head>
   <body>
     <div id="main">
-      <h1>chatterbox</h1>
+      <h1>chatrboox</h1>
 
       <!-- Your HTML goes here! -->
-      <div class="dropdown">
-        <select id="dropdown" onchange="app.changeRoom(value)">
-        </select>
+        <span class="dropdown">
+          Change Room: 
+          <select id="dropdown" onchange="app.changeRoom(value)">
+          </select>
+        </span>
+        <span class="customRoomContainer">
+          <input type="text" class="customRoom" name="customRoom"><br>
+          <input onclick="app.addRoom($('.customRoom').val())" type="submit" value="Add Room">
+        </span>
+
+        <div class="addMessage">
+          <input type="text" class="textMessage" name="textMessage"><br>
+          <input onclick="app.sendMessage($('.textMessage').val())" class="submitMessage" type="submit" value="Send Message">
+        </div>
       </div>
-      <div class="customRoomContainer">
-        Room Name: <input type="text" class="customRoom" name="customRoom"><br>
-        <input onclick="app.addRoom($('.customRoom').val())" type="submit" value="Submit">
-      </div>
-      <div class="message">
-        <input type="text" class="textMessage" name="textMessage"><br>
-        <input onclick="app.sendMessage($('.textMessage').val())" type="submit" value="Submit">
-      </div>
-    </div>
+
     <div id="chats">
 
 

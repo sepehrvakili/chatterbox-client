@@ -37,7 +37,6 @@ var app = {
   },
 
   send: (message) => {
-    console.log('inside send function call');
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
       url: app.server,
@@ -58,8 +57,6 @@ var app = {
   },
 
   fetch: () => {
-    // var context = this;
-    // console.log(this);
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
       url: app.server,
@@ -71,10 +68,6 @@ var app = {
       success: function (data) {
         console.log('chatterbox: Message received');
         allData = data.results;
-        // app.displayMessages(allData);
-        // app.displayMessages(data);
-        // app.populateDropdown(data);
-        // console.log(data);
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -88,23 +81,14 @@ var app = {
   },
 
   addMessage: (message) => {
-    // get invoked upon clicking submit on the input field
-    // get the username
-    // get the input filed
-    // get the text
-    // invoke send(message)
-    var html = `<div>username: ${app.sanitize(message['username'])}: message: ${app.sanitize(message['text'])}</div>`;
+    var html = `<div class="chat"><span class="username">${app.sanitize(message['username'])}</span>: ${app.sanitize(message['text'])}</div>`;
     $('#chats').append(html);
-    // app.displayMessages(message);
-    // update allData
   },
   // CUSTOM FUNCTIONS //
 
   displayMessages: (data) => {
     for ( var chat of data ) {
-      // console.log(chat);
-      var html = `<div>username: ${app.sanitize(chat['username'])}: message: ${app.sanitize(chat['text'])}</div>`;
-      $('#chats').append(html);
+      app.addMessage(chat);
     }
   },
 
@@ -118,7 +102,6 @@ var app = {
       var html = `<option value="${cleanRoom}">${cleanRoom}</option>`;
       $('#dropdown').append(html);      
     }
-    console.log(rooms);
   },
 
   addRoom: (room, message) => {
@@ -166,6 +149,11 @@ var app = {
   }
 
 };
+
+// $('submitMessage').on('click', function() {
+//   var text = $('.textMessage').val();
+//   app.sendMessage(text);
+// });
 
 $( document ).ready(
   app.init()
