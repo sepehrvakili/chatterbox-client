@@ -1,16 +1,11 @@
 // YOUR CODE HERE:
 var allData = [];
-var getData = function(target) {
-  var chat = allData;
-  for (chat of allData) {
-    return chat[target];
-  }
-};
-
+var friends = {};
 
 var app = {
   server: 'https://api.parse.com/1/classes/messages',
-
+  currentRoom: 'lobby',
+  currentUser: window.location.search.slice(10),
   // TEST SPEC FUNCTIONS //
 
   init: () => {
@@ -25,8 +20,9 @@ var app = {
       success: function (data) {
         console.log('chatterbox: Message received');
         allData = data.results;
-        app.displayMessages(allData);
+        // app.displayMessages(allData);
         app.populateDropdown(allData);
+        app.changeRoom(app.currentRoom);
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -45,9 +41,8 @@ var app = {
       contentType: 'application/json',
       success: function (data) {
         console.log('chatterbox: Message sent');
-        app.init();
-        // allData = data.results;
-        // app.displayMessages(data);
+        app.fetch();
+        // app.populateDropdown();
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -68,6 +63,8 @@ var app = {
       success: function (data) {
         console.log('chatterbox: Message received');
         allData = data.results;
+        app.changeRoom(app.currentRoom);
+        app.populateDropdown();
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -81,10 +78,21 @@ var app = {
   },
 
   addMessage: (message) => {
-    var html = `<div class="chat"><span class="username">${app.sanitize(message['username'])}</span>: ${app.sanitize(message['text'])}</div>`;
+    var html = `<div class="chat"><span class="username">
+    <a href="#" class="addFriend">${app.sanitize(message['username'])}</a>
+    </span>: ${app.sanitize(message['text'])}</div>`;
     $('#chats').append(html);
   },
   // CUSTOM FUNCTIONS //
+  addFriend: (friend) => {
+    friends[currentUser] = friends[currentUser] || [];
+    friends[app.currentUser].push(friend);
+    console.log('friend');
+  },
+
+  clearDropDown: () => {
+    $('#dropdown').empty();
+  },
 
   displayMessages: (data) => {
     for ( var chat of data ) {
@@ -93,6 +101,7 @@ var app = {
   },
 
   populateDropdown: () => {
+    app.clearDropDown();
     var rooms = [];
     for (var chat of allData) {
       rooms.push(chat.roomname);
@@ -100,30 +109,38 @@ var app = {
     for (var room of _.uniq(rooms)) {
       var cleanRoom = app.sanitize(room);
       var html = `<option value="${cleanRoom}">${cleanRoom}</option>`;
+      if ( cleanRoom === app.currentRoom ) {
+        html = `<option selected="selected" value="${cleanRoom}">${cleanRoom}</option>`;
+      }
       $('#dropdown').append(html);      
     }
   },
 
-  addRoom: (room, message) => {
+  addRoom: (room) => {
+    // pull room input value into dropdown
+    var cleanRoom = app.sanitize(room);
+    app.currentRoom = cleanRoom;
+    var html = `<option  selected="selected" value="${cleanRoom}">${cleanRoom}</option>`;
     // empty the DOM 
-    // add message || "add a message to your new room!"
-    // 
-
-
+    app.clearMessages();
+    // update the drop down value
+    $('#dropdown').append(html);
   },
 
   changeRoom: (room) => {
+    app.clearMessages();
+    var cleanRoom = app.sanitize(room);
+    app.currentRoom = cleanRoom;
     var roomData = [];
     for (var chat of allData) {
       if (chat.roomname === room && chat.roomname !== undefined ) {
         roomData.push(chat);
       } 
     }
-    app.clearMessages();
     app.displayMessages(roomData);
   },
   sendMessage: (textMessage) => {
-    var username = window.location.search.slice(10);
+    var username = app.currentUser;
     var room = $('#dropdown option:selected').text();
     var messageObject = {
       username: username,
@@ -155,8 +172,17 @@ var app = {
 //   app.sendMessage(text);
 // });
 
-$( document ).ready(
-  app.init()
-  // app.populateDropdown()
-);
+$(document).ready(function() {
+  app.init();
+  $('a .addFriend').on('click', function () {
+    console.log('hello');
+  });
+});
+
+
+
+
+
+
+
 
