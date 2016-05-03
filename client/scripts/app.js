@@ -78,9 +78,21 @@ var app = {
   },
 
   addMessage: (message) => {
-    var html = `<div class="chat"><span class="username">
-    <a href="#" class="addFriend">${app.sanitize(message['username'])}</a>
-    </span>: ${app.sanitize(message['text'])}</div>`;
+    var html = '';
+
+    if (friends[app.currentUser] && (friends[app.currentUser].indexOf(app.sanitize(message['username'])) !== -1)) {
+
+      html = `<div class="chat friend">
+      <span class="username">
+      <a href="#" class="addFriend">${app.sanitize(message['username'])}</a>
+      </span>: ${app.sanitize(message['text'])}</div>`;
+    } else {
+      html = `<div class="chat">
+      <span class="username">
+      <a href="#" class="addFriend">${app.sanitize(message['username'])}</a>
+      </span>: ${app.sanitize(message['text'])}</div>`;
+    }
+
     $('#chats').append(html);
   },
   // CUSTOM FUNCTIONS //
