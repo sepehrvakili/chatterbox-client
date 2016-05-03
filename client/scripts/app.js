@@ -85,9 +85,8 @@ var app = {
   },
   // CUSTOM FUNCTIONS //
   addFriend: (friend) => {
-    friends[currentUser] = friends[currentUser] || [];
+    friends[app.currentUser] = friends[app.currentUser] || [];
     friends[app.currentUser].push(friend);
-    console.log('friend');
   },
 
   clearDropDown: () => {
@@ -98,6 +97,10 @@ var app = {
     for ( var chat of data ) {
       app.addMessage(chat);
     }
+    $('.addFriend').on('click', function () {
+      var friend = $(this).text();
+      app.addFriend(friend);
+    });
   },
 
   populateDropdown: () => {
@@ -167,16 +170,9 @@ var app = {
 
 };
 
-// $('submitMessage').on('click', function() {
-//   var text = $('.textMessage').val();
-//   app.sendMessage(text);
-// });
 
 $(document).ready(function() {
   app.init();
-  $('a .addFriend').on('click', function () {
-    console.log('hello');
-  });
 });
 
 
