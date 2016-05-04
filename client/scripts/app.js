@@ -124,7 +124,7 @@ var app = {
     for (var room of _.uniq(rooms)) {
       var cleanRoom = app.sanitize(room);
       var html = `<option value="${cleanRoom}">${cleanRoom}</option>`;
-      if ( cleanRoom === app.currentRoom ) {
+      if (cleanRoom === app.currentRoom && cleanRoom[0] !== ' ') {
         html = `<option selected="selected" value="${cleanRoom}">${cleanRoom}</option>`;
       }
       $('#dropdown').append(html);      
@@ -148,7 +148,7 @@ var app = {
     app.currentRoom = cleanRoom;
     var roomData = [];
     for (var chat of allData) {
-      if (chat.roomname === room && chat.roomname !== undefined ) {
+      if (chat.roomname === room && chat.roomname !== undefined) {
         roomData.push(chat);
       } 
     }

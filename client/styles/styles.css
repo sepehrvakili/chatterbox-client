@@ -5,8 +5,17 @@ body {
     font-family: arial, sans-serif;
 }
 
+.logo {
+    background-image: url('file:///Users/student/Desktop/2016-04-chatterbox-client/client/images/panda-face.png');
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    border-right: 2px #e67e22 solid;
+    border-bottom: 2px #e67e22 solid;
+}
+
 #main, #chats {
-    width: 500px;
+    max-width: 500px;
     margin: auto;
     text-align: left;
     background: white;
@@ -20,6 +29,7 @@ body {
     font-size: 35px;
     margin-bottom: 5px;
     padding: 5px;
+    display: inline-block;
 }
 
 #main h1 span {
@@ -87,3 +97,60 @@ form input[type=text] {
     color: #fff;
     background-color: #0090da;
 }
+
+.customRoomContainer {
+    margin: 10px;
+}
+
+.textMessage {
+    margin: 1em 0;
+    width: 98.8%;
+    height: 50px;
+}
+.addMessage {
+    width: 100%;
+}
+.options {
+    padding: 1em;
+    background-color: #1abc9c;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;
+}
+
+.addRoomButton {
+display: inline;
+  color: #ffffff;
+  font-size: 10px;
+  background: #d35400;
+  padding: 5px 10px 5px 10px;
+  text-decoration: none;
+  border: 0px;
+}
+
+.addRoomButton:hover {
+  background: #3cb0fd;
+  text-decoration: none;
+}
+
+#dropdown {
+    width: 120px;
+}
+
+.submitMessage {
+  display: inline;
+  color: #ffffff;
+  font-size: 10px;
+  background: #e74c3c;
+  padding: 10px 20px 10px 10px;
+  width: 100%;
+  text-decoration: none;
+  border: 0px;
+}
+
+.submitMessage:hover {
+  background: #f1c40f;
+  text-decoration: none;
+}
+
+
+
+
